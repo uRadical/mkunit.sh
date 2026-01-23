@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scripting & CI - mkunit</title>
+  <meta name="description" content="Use mkunit in automation, CI/CD pipelines, and dotfiles.">
+  <meta property="og:title" content="mkunit Scripting Guide">
+  <meta property="og:description" content="Using mkunit in automation and CI/CD.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/guides/scripting.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link active">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1>Scripting & CI</h1>
+      <p class="docs-subtitle">Using mkunit in automation, CI/CD pipelines, and dotfiles.</p>
+
+      <h2>Non-Interactive Mode</h2>
+      <p>For scripts and CI, use <code>--no-interactive</code> to prevent prompts:</p>
+
+      <pre class="language-bash"><code>mkunit service myapp \
+  --exec "./server" \
+  --restart on-failure \
+  --install \
+  --no-interactive</code></pre>
+
+      <p>mkunit also auto-detects non-interactive environments (no TTY, CI variable set).</p>
+
+      <h2>Dry Run for Validation</h2>
+      <p>Use <code>--dry-run</code> to generate unit files without writing them:</p>
+
+      <pre class="language-bash"><code># Preview the unit file
+mkunit service myapp --exec "./server" --dry-run
+
+# Write to a specific location for review
+mkunit service myapp --exec "./server" --dry-run > myapp.service
+
+# Validate the generated file
+mkunit validate ./myapp.service --strict</code></pre>
+
+      <h2>Exit Codes</h2>
+      <p>mkunit uses standard exit codes for scripting:</p>
+
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Success</td></tr>
+          <tr><td><code>1</code></td><td>General error</td></tr>
+          <tr><td><code>2</code></td><td>Invalid arguments or missing required options</td></tr>
+          <tr><td><code>3</code></td><td>Unit not found</td></tr>
+          <tr><td><code>4</code></td><td>Validation failed</td></tr>
+          <tr><td><code>5</code></td><td>Permission denied</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Example: Deployment Script</h2>
+      <pre class="language-bash"><code>#!/bin/bash
+set -e
+
+APP_NAME="myapp"
+APP_DIR="/opt/myapp"
+APP_USER="myapp"
+
+# Create or update the service
+sudo mkunit service "$APP_NAME" \
+  --exec "$APP_DIR/bin/server" \
+  --workdir "$APP_DIR" \
+  --user "$APP_USER" \
+  --env-file "$APP_DIR/.env" \
+  --restart on-failure \
+  --hardening \
+  --system \
+  --install \
+  --no-interactive
+
+# Reload and restart
+sudo systemctl daemon-reload
+sudo systemctl restart "$APP_NAME"
+
+# Verify it's running
+if mkunit status "$APP_NAME" --system -q; then
+  echo "✓ $APP_NAME is running"
+else
+  echo "✗ $APP_NAME failed to start"
+  mkunit logs "$APP_NAME" --system -n 50
+  exit 1
+fi</code></pre>
+
+      <h2>Example: GitHub Actions</h2>
+      <pre class="language-yaml"><code>name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mkunit
+        run: cargo install mkunit
+
+      - name: Generate unit file
+        run: |
+          mkunit service myapp \
+            --exec "./server" \
+            --restart on-failure \
+            --hardening \
+            --dry-run > myapp.service
+
+      - name: Validate unit file
+        run: mkunit validate ./myapp.service --strict
+
+      - name: Deploy to server
+        run: |
+          scp myapp.service server:/tmp/
+          ssh server 'sudo mv /tmp/myapp.service /etc/systemd/system/ && \
+                      sudo systemctl daemon-reload && \
+                      sudo systemctl restart myapp'</code></pre>
+
+      <h2>Example: Ansible Integration</h2>
+      <pre class="language-yaml"><code>- name: Create systemd service with mkunit
+  command: >
+    mkunit service {{ app_name }}
+    --exec "{{ app_exec }}"
+    --workdir "{{ app_dir }}"
+    --user "{{ app_user }}"
+    --restart on-failure
+    --hardening
+    --system
+    --install
+    --no-interactive
+  become: yes
+  notify: restart app
+
+- name: Ensure service is enabled
+  systemd:
+    name: "{{ app_name }}"
+    enabled: yes
+    state: started
+  become: yes</code></pre>
+
+      <h2>Example: Dotfiles Bootstrap</h2>
+      <p>Set up user services when bootstrapping a new machine:</p>
+
+      <pre class="language-bash"><code>#!/bin/bash
+# ~/.dotfiles/setup-services.sh
+
+# SSH agent service
+mkunit service ssh-agent \
+  --exec "/usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK" \
+  --env "SSH_AUTH_SOCK=$HOME/.ssh/agent.sock" \
+  --install --enable \
+  --no-interactive
+
+# Syncthing
+mkunit service syncthing \
+  --exec "/usr/bin/syncthing serve --no-browser --no-restart" \
+  --restart on-failure \
+  --install --enable \
+  --no-interactive
+
+# Start services
+systemctl --user start ssh-agent syncthing
+
+echo "Services installed and started"</code></pre>
+
+      <h2>JSON Output</h2>
+      <p>Use <code>--json</code> for machine-readable output:</p>
+
+      <pre class="language-bash"><code># List units as JSON
+mkunit list --json | jq '.[] | select(.state == "active")'
+
+# Get status as JSON
+mkunit status myapp --json | jq '.pid'
+
+# Validate with JSON output
+mkunit validate myapp --json | jq '.warnings'</code></pre>
+
+      <h2>Idempotent Operations</h2>
+      <p>mkunit commands are idempotent - running them multiple times has the same effect:</p>
+
+      <pre class="language-bash"><code># Safe to run multiple times - just overwrites the unit file
+mkunit service myapp --exec "./server" --install --no-interactive
+
+# Remove is also safe if unit doesn't exist
+mkunit remove myapp --force 2>/dev/null || true</code></pre>
+
+      <h2>Error Handling</h2>
+      <pre class="language-bash"><code>#!/bin/bash
+set -e
+
+# Create service with error handling
+if ! mkunit service myapp --exec "./server" --install --no-interactive 2>&1; then
+  echo "Failed to create service"
+  exit 1
+fi
+
+# Check if service is healthy after starting
+systemctl --user start myapp
+sleep 2
+
+if ! mkunit status myapp -q; then
+  echo "Service failed to start. Logs:"
+  mkunit logs myapp -n 20
+  exit 1
+fi</code></pre>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/guides/interactive-mode.html">Interactive Mode</a> - How prompts work</li>
+          <li><a href="/docs/commands/validate.html">validate command</a> - Validate unit files</li>
+          <li><a href="/docs/commands/status.html">status command</a> - Check unit status</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

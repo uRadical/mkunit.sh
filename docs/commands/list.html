@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit list - List units</title>
+  <meta name="description" content="List systemd units created by mkunit.">
+  <meta property="og:title" content="mkunit list command">
+  <meta property="og:description" content="List systemd units with mkunit.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/list.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link active">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1><code>mkunit list</code></h1>
+      <p class="docs-subtitle">List units created by mkunit.</p>
+
+      <div class="usage-box">
+        mkunit list [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>list</code> command shows all units that were created by mkunit (or all
+        units in the user/system directories). It displays the unit name, type, status,
+        and whether it's enabled.
+      </p>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--system</code></td>
+            <td>List system units</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--type &lt;type&gt;</code>, <code>-t</code></td>
+            <td>Filter by unit type (service, timer, socket, path, mount, target)</td>
+            <td>All types</td>
+          </tr>
+          <tr>
+            <td><code>--state &lt;state&gt;</code></td>
+            <td>Filter by state (active, inactive, failed)</td>
+            <td>All states</td>
+          </tr>
+          <tr>
+            <td><code>--all</code>, <code>-a</code></td>
+            <td>Include all units, not just mkunit-created ones</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--json</code></td>
+            <td>Output as JSON</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Examples</h2>
+
+      <h3>List all user units</h3>
+      <pre class="language-bash"><code>mkunit list</code></pre>
+
+      <p>Example output:</p>
+      <pre class="language-bash"><code>UNIT                    TYPE      STATE    ENABLED
+myapp.service           service   active   yes
+backup.service          service   inactive yes
+backup.timer            timer     active   yes
+file-watcher.path       path      active   yes
+
+4 units</code></pre>
+
+      <h3>List only services</h3>
+      <pre class="language-bash"><code>mkunit list -t service</code></pre>
+
+      <h3>List only running units</h3>
+      <pre class="language-bash"><code>mkunit list --state active</code></pre>
+
+      <h3>List system units</h3>
+      <pre class="language-bash"><code>mkunit list --system</code></pre>
+
+      <h3>List timers</h3>
+      <pre class="language-bash"><code>mkunit list -t timer</code></pre>
+
+      <p>For timers, additional columns show last run and next run times:</p>
+      <pre class="language-bash"><code>UNIT             STATE   LAST RUN            NEXT RUN
+backup.timer     active  2024-01-15 00:00    2024-01-16 00:00
+sync.timer       active  2024-01-15 14:45    2024-01-15 15:00
+
+2 timers</code></pre>
+
+      <h3>JSON output</h3>
+      <pre class="language-bash"><code>mkunit list --json</code></pre>
+
+      <pre class="language-json"><code>[
+  {
+    "name": "myapp.service",
+    "type": "service",
+    "state": "active",
+    "enabled": true,
+    "path": "/home/user/.config/systemd/user/myapp.service"
+  },
+  {
+    "name": "backup.timer",
+    "type": "timer",
+    "state": "active",
+    "enabled": true,
+    "last_run": "2024-01-15T00:00:00Z",
+    "next_run": "2024-01-16T00:00:00Z",
+    "path": "/home/user/.config/systemd/user/backup.timer"
+  }
+]</code></pre>
+
+      <h3>List failed units</h3>
+      <pre class="language-bash"><code>mkunit list --state failed</code></pre>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/status.html">mkunit status</a> - Get detailed status of a specific unit</li>
+          <li><a href="/docs/commands/show.html">mkunit show</a> - Show unit file contents</li>
+          <li><a href="/docs/commands/remove.html">mkunit remove</a> - Remove units from the list</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

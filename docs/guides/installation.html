@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Installation - mkunit</title>
+  <meta name="description" content="Install mkunit on Linux or macOS via Homebrew, Cargo, or from source.">
+  <meta property="og:title" content="Installing mkunit">
+  <meta property="og:description" content="Install mkunit on your system.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/guides/installation.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link active">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1>Installation</h1>
+      <p class="docs-subtitle">Install mkunit on your system.</p>
+
+      <h2>Requirements</h2>
+      <ul>
+        <li>Linux with systemd (for full functionality)</li>
+        <li>macOS (for development/testing - unit files can be generated but not installed)</li>
+      </ul>
+
+      <h2>Homebrew (Recommended)</h2>
+      <p>The easiest way to install mkunit on Linux or macOS:</p>
+      <pre class="language-bash"><code>brew install mkunit</code></pre>
+
+      <p>This automatically sets up shell completions for bash, zsh, and fish.</p>
+
+      <h2>Cargo (Rust)</h2>
+      <p>If you have Rust installed:</p>
+      <pre class="language-bash"><code>cargo install mkunit</code></pre>
+
+      <p>Make sure <code>~/.cargo/bin</code> is in your PATH:</p>
+      <pre class="language-bash"><code># Add to ~/.bashrc or ~/.zshrc
+export PATH="$HOME/.cargo/bin:$PATH"</code></pre>
+
+      <h2>Install Script (Debian/Ubuntu)</h2>
+      <p>For Debian-based systems:</p>
+      <pre class="language-bash"><code>curl -sSL https://mkunit.sh/install.sh | bash</code></pre>
+
+      <p>This downloads the latest release binary and installs it to <code>/usr/local/bin</code>.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Note
+        </div>
+        <p>Review scripts before running them: <code>curl -sSL https://mkunit.sh/install.sh | less</code></p>
+      </div>
+
+      <h2>Arch Linux (AUR)</h2>
+      <p>Available in the AUR:</p>
+      <pre class="language-bash"><code># Using yay
+yay -S mkunit
+
+# Using paru
+paru -S mkunit</code></pre>
+
+      <h2>NixOS / Nix</h2>
+      <pre class="language-bash"><code># Try it out
+nix-shell -p mkunit
+
+# Install permanently
+nix-env -iA nixpkgs.mkunit</code></pre>
+
+      <p>Or add to your configuration:</p>
+      <pre class="language-nix"><code>environment.systemPackages = with pkgs; [
+  mkunit
+];</code></pre>
+
+      <h2>From Source</h2>
+      <p>Clone and build from source:</p>
+      <pre class="language-bash"><code>git clone https://github.com/alan/mkunit.git
+cd mkunit
+cargo build --release
+
+# Install to /usr/local/bin
+sudo cp target/release/mkunit /usr/local/bin/</code></pre>
+
+      <h2>Pre-built Binaries</h2>
+      <p>Download pre-built binaries from the <a href="https://github.com/alan/mkunit/releases">GitHub Releases</a> page:</p>
+
+      <pre class="language-bash"><code># Linux x86_64
+curl -LO https://github.com/alan/mkunit/releases/latest/download/mkunit-linux-x86_64.tar.gz
+tar xzf mkunit-linux-x86_64.tar.gz
+sudo mv mkunit /usr/local/bin/
+
+# Linux ARM64
+curl -LO https://github.com/alan/mkunit/releases/latest/download/mkunit-linux-aarch64.tar.gz
+tar xzf mkunit-linux-aarch64.tar.gz
+sudo mv mkunit /usr/local/bin/</code></pre>
+
+      <h2>Verify Installation</h2>
+      <pre class="language-bash"><code>mkunit --version</code></pre>
+
+      <h2>Shell Completions</h2>
+      <p>Set up tab completion for your shell:</p>
+
+      <h3>Bash</h3>
+      <pre class="language-bash"><code># Add to ~/.bashrc
+eval "$(mkunit completions bash)"</code></pre>
+
+      <h3>Zsh</h3>
+      <pre class="language-bash"><code># Add to ~/.zshrc (before compinit)
+eval "$(mkunit completions zsh)"</code></pre>
+
+      <h3>Fish</h3>
+      <pre class="language-bash"><code>mkunit completions fish > ~/.config/fish/completions/mkunit.fish</code></pre>
+
+      <p>See <a href="/docs/commands/completions.html">completions command</a> for more details.</p>
+
+      <h2>Upgrading</h2>
+      <pre class="language-bash"><code># Homebrew
+brew upgrade mkunit
+
+# Cargo
+cargo install mkunit --force
+
+# From source
+git pull
+cargo build --release
+sudo cp target/release/mkunit /usr/local/bin/</code></pre>
+
+      <h2>Uninstalling</h2>
+      <pre class="language-bash"><code># Homebrew
+brew uninstall mkunit
+
+# Cargo
+cargo uninstall mkunit
+
+# Manual
+sudo rm /usr/local/bin/mkunit</code></pre>
+
+      <div class="see-also">
+        <h3>Next Steps</h3>
+        <ul>
+          <li><a href="/docs/guides/quick-start.html">Quick Start Guide</a> - Create your first service</li>
+          <li><a href="/docs/commands/service.html">service command</a> - Learn service creation options</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-nix.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

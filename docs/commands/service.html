@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit service - Create systemd service units</title>
+  <meta name="description" content="Create systemd service unit files with mkunit service command.">
+  <meta property="og:title" content="mkunit service command">
+  <meta property="og:description" content="Create systemd service unit files with mkunit.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/service.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-icon">$</span> mkunit
+      </a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <!-- Sidebar -->
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link active">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="docs-content">
+      <h1><code>mkunit service</code></h1>
+      <p class="docs-subtitle">Create a systemd service unit.</p>
+
+      <div class="usage-box">
+        mkunit service &lt;name&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>service</code> command creates a <code>.service</code> unit file for running daemons,
+        servers, or one-shot scripts. Supports all common service options including restart policies,
+        environment variables, and security hardening.
+      </p>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;name&gt;</code></td>
+            <td>Name of the service (without <code>.service</code> extension)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--exec &lt;command&gt;</code></td>
+            <td>Command to execute (ExecStart)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--workdir &lt;path&gt;</code></td>
+            <td>Working directory for the service</td>
+            <td>Current directory</td>
+          </tr>
+          <tr>
+            <td><code>--description &lt;text&gt;</code></td>
+            <td>Human-readable description</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td><code>--type &lt;type&gt;</code></td>
+            <td>Service type: <code>simple</code>, <code>exec</code>, <code>forking</code>, <code>oneshot</code>, <code>notify</code>, <code>idle</code></td>
+            <td><code>simple</code></td>
+          </tr>
+          <tr>
+            <td><code>--restart &lt;policy&gt;</code></td>
+            <td>Restart policy: <code>no</code>, <code>always</code>, <code>on-success</code>, <code>on-failure</code>, <code>on-abnormal</code>, <code>on-abort</code>, <code>on-watchdog</code></td>
+            <td><code>on-failure</code></td>
+          </tr>
+          <tr>
+            <td><code>--restart-sec &lt;seconds&gt;</code></td>
+            <td>Time to wait before restart</td>
+            <td><code>5</code></td>
+          </tr>
+          <tr>
+            <td><code>--user &lt;username&gt;</code></td>
+            <td>Run service as this user (system services only)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--group &lt;groupname&gt;</code></td>
+            <td>Run service as this group (system services only)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--env &lt;KEY=value&gt;</code></td>
+            <td>Set environment variable (can be repeated)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--env-file &lt;path&gt;</code></td>
+            <td>Load environment from file</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--after &lt;unit&gt;</code></td>
+            <td>Start after this unit (can be repeated)</td>
+            <td><code>network.target</code></td>
+          </tr>
+          <tr>
+            <td><code>--requires &lt;unit&gt;</code></td>
+            <td>Require this unit (can be repeated)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--wants &lt;unit&gt;</code></td>
+            <td>Want this unit (can be repeated)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--wanted-by &lt;target&gt;</code></td>
+            <td>Install to this target</td>
+            <td><code>default.target</code></td>
+          </tr>
+          <tr>
+            <td><code>--hardening</code></td>
+            <td>Enable security hardening options</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Create a system service (requires sudo)</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--install</code></td>
+            <td>Install the unit file after creation</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--start</code></td>
+            <td>Start the service after installation</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--enable</code></td>
+            <td>Enable the service to start on boot</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--output &lt;path&gt;</code></td>
+            <td>Write unit file to custom path</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--dry-run</code></td>
+            <td>Print unit file without writing</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--no-interactive</code></td>
+            <td>Disable interactive prompts</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Examples</h2>
+
+      <h3>Basic service</h3>
+      <pre class="language-bash"><code>mkunit service myapp --exec "./server"</code></pre>
+
+      <h3>With restart and working directory</h3>
+      <pre class="language-bash"><code>mkunit service api \
+  --exec "/usr/local/bin/api serve" \
+  --workdir /var/lib/api \
+  --restart always \
+  --install</code></pre>
+
+      <h3>With environment variables</h3>
+      <pre class="language-bash"><code>mkunit service worker \
+  --exec "./worker" \
+  --env "REDIS_URL=localhost:6379" \
+  --env "WORKERS=4"</code></pre>
+
+      <h3>With environment file</h3>
+      <pre class="language-bash"><code>mkunit service webapp \
+  --exec "./webapp" \
+  --env-file /etc/webapp/env \
+  --install --start</code></pre>
+
+      <h3>With security hardening</h3>
+      <pre class="language-bash"><code>mkunit service secure-app \
+  --exec "./app" \
+  --user www-data \
+  --hardening \
+  --install</code></pre>
+
+      <h3>One-shot service (runs once, not a daemon)</h3>
+      <pre class="language-bash"><code>mkunit service backup \
+  --exec "/usr/local/bin/backup.sh" \
+  --type oneshot</code></pre>
+
+      <h3>System service (requires sudo)</h3>
+      <pre class="language-bash"><code>sudo mkunit service nginx-proxy \
+  --exec "/usr/bin/nginx" \
+  --system \
+  --user nginx \
+  --install --enable</code></pre>
+
+      <h3>Preview without creating</h3>
+      <pre class="language-bash"><code>mkunit service myapp --exec "./server" --dry-run</code></pre>
+
+      <h3>Full example with all options</h3>
+      <pre class="language-bash"><code>mkunit service myapp \
+  --exec "/opt/myapp/bin/server --config /etc/myapp/config.yaml" \
+  --workdir /opt/myapp \
+  --description "My Application Server" \
+  --type simple \
+  --restart on-failure \
+  --restart-sec 10 \
+  --env "NODE_ENV=production" \
+  --env "PORT=3000" \
+  --after network.target \
+  --after postgresql.service \
+  --wants postgresql.service \
+  --hardening \
+  --install --enable --start</code></pre>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/timer.html">mkunit timer</a> - Schedule this service to run at specific times</li>
+          <li><a href="/docs/commands/status.html">mkunit status</a> - Check service status</li>
+          <li><a href="/docs/commands/logs.html">mkunit logs</a> - View service logs</li>
+          <li><a href="/docs/commands/edit.html">mkunit edit</a> - Edit the service unit file</li>
+          <li><a href="/docs/guides/hardening.html">Security Hardening Guide</a> - Learn about hardening options</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

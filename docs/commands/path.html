@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit path - Create systemd path units</title>
+  <meta name="description" content="Create systemd path unit files to trigger services on file/directory changes.">
+  <meta property="og:title" content="mkunit path command">
+  <meta property="og:description" content="Create systemd path units for file watching.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/path.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link active">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1><code>mkunit path</code></h1>
+      <p class="docs-subtitle">Create a systemd path unit to trigger on file/directory changes.</p>
+
+      <div class="usage-box">
+        mkunit path &lt;name&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>path</code> command creates a <code>.path</code> unit file for monitoring
+        filesystem paths. When the watched path changes, systemd triggers the associated service.
+        This is useful for processing uploaded files, reloading configurations, or reacting
+        to log file changes.
+      </p>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;name&gt;</code></td>
+            <td>Name of the path unit (without <code>.path</code> extension)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--unit &lt;name&gt;</code></td>
+            <td>Service unit to trigger</td>
+            <td><code>&lt;name&gt;.service</code></td>
+          </tr>
+          <tr>
+            <td><code>--path-exists &lt;path&gt;</code></td>
+            <td>Trigger when path exists</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--path-exists-glob &lt;glob&gt;</code></td>
+            <td>Trigger when glob matches any files</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--path-changed &lt;path&gt;</code></td>
+            <td>Trigger when path is modified</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--path-modified &lt;path&gt;</code></td>
+            <td>Trigger when path is written to</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--directory-not-empty &lt;path&gt;</code></td>
+            <td>Trigger when directory has files</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--make-directory</code></td>
+            <td>Create the watched directory if missing</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--directory-mode &lt;mode&gt;</code></td>
+            <td>Mode for created directory (octal)</td>
+            <td><code>0755</code></td>
+          </tr>
+          <tr>
+            <td><code>--description &lt;text&gt;</code></td>
+            <td>Human-readable description</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Create a system path unit</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--install</code></td>
+            <td>Install the unit file</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--start</code></td>
+            <td>Start the path watcher</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--enable</code></td>
+            <td>Enable on boot</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--dry-run</code></td>
+            <td>Print without writing</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Watch Types</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Triggers When</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>PathExists</code></td>
+            <td>File or directory exists (checked on timer start and periodically)</td>
+          </tr>
+          <tr>
+            <td><code>PathExistsGlob</code></td>
+            <td>Any files match the glob pattern</td>
+          </tr>
+          <tr>
+            <td><code>PathChanged</code></td>
+            <td>File is renamed, deleted, or attributes change</td>
+          </tr>
+          <tr>
+            <td><code>PathModified</code></td>
+            <td>File content is written (close after write)</td>
+          </tr>
+          <tr>
+            <td><code>DirectoryNotEmpty</code></td>
+            <td>Directory contains at least one file</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Examples</h2>
+
+      <h3>Watch for new files in upload directory</h3>
+      <pre class="language-bash"><code>mkunit path upload-processor \
+  --directory-not-empty /var/uploads \
+  --make-directory \
+  --install --start</code></pre>
+
+      <h3>Trigger processing when config changes</h3>
+      <pre class="language-bash"><code>mkunit path config-reload \
+  --path-modified /etc/myapp/config.yaml \
+  --unit myapp-reload.service \
+  --install --enable</code></pre>
+
+      <h3>React to log file modifications</h3>
+      <pre class="language-bash"><code>mkunit path log-analyzer \
+  --path-modified /var/log/myapp/access.log \
+  --install --start</code></pre>
+
+      <h3>Watch for lock file (simple semaphore)</h3>
+      <pre class="language-bash"><code>mkunit path trigger-job \
+  --path-exists /tmp/run-job.trigger \
+  --install --enable</code></pre>
+
+      <h3>Process matching files with glob</h3>
+      <pre class="language-bash"><code>mkunit path csv-importer \
+  --path-exists-glob "/var/data/incoming/*.csv" \
+  --install --start</code></pre>
+
+      <h3>Watch multiple conditions</h3>
+      <pre class="language-bash"><code># First create the path unit
+mkunit path multi-watch \
+  --path-modified /etc/myapp/config.yaml \
+  --directory-not-empty /var/spool/myapp \
+  --install</code></pre>
+
+      <div class="callout callout-info">
+        <div class="callout-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Note
+        </div>
+        <p>Path units use inotify under the hood. For high-volume directories, consider using a timer instead to batch process files periodically.</p>
+      </div>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/service.html">mkunit service</a> - Create the triggered service</li>
+          <li><a href="/docs/commands/timer.html">mkunit timer</a> - For scheduled (vs event-based) triggers</li>
+          <li><a href="/docs/commands/status.html">mkunit status</a> - Check path unit status</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

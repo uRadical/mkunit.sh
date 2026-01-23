@@ -1,0 +1,10 @@
+# mkunit.sh robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mkunit.sh/sitemap.xml
+
+# LLMs
+# See https://mkunit.sh/llms.txt for AI/LLM information

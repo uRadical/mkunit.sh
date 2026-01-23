@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit remove - Remove systemd units</title>
+  <meta name="description" content="Stop, disable, and remove systemd unit files.">
+  <meta property="og:title" content="mkunit remove command">
+  <meta property="og:description" content="Remove systemd units with mkunit.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/remove.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link active">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1><code>mkunit remove</code></h1>
+      <p class="docs-subtitle">Stop, disable, and remove a unit file.</p>
+
+      <div class="usage-box">
+        mkunit remove &lt;name&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>remove</code> command cleanly removes a unit by stopping it (if running),
+        disabling it (if enabled), removing the unit file, and running daemon-reload.
+        This is the reverse of <code>mkunit service --install --enable --start</code>.
+      </p>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;name&gt;</code></td>
+            <td>Name of the unit to remove</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Remove a system unit (requires sudo)</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--force</code>, <code>-f</code></td>
+            <td>Don't prompt for confirmation</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--keep-logs</code></td>
+            <td>Don't clear journal logs for this unit</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--dry-run</code></td>
+            <td>Show what would be done without doing it</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>What Remove Does</h2>
+      <p>The remove command performs the following steps in order:</p>
+      <ol>
+        <li>Stop the unit if it's running</li>
+        <li>Disable the unit if it's enabled</li>
+        <li>Remove the unit file</li>
+        <li>Run <code>systemctl daemon-reload</code></li>
+        <li>Optionally clear journal logs for the unit</li>
+      </ol>
+
+      <h2>Examples</h2>
+
+      <h3>Remove a user service</h3>
+      <pre class="language-bash"><code>mkunit remove myapp</code></pre>
+
+      <p>Output:</p>
+      <pre class="language-bash"><code>Stopping myapp.service...
+Disabling myapp.service...
+Removing /home/user/.config/systemd/user/myapp.service...
+Reloading systemd...
+Removed myapp.service</code></pre>
+
+      <h3>Remove without confirmation</h3>
+      <pre class="language-bash"><code>mkunit remove myapp --force</code></pre>
+
+      <h3>Remove a system service</h3>
+      <pre class="language-bash"><code>sudo mkunit remove nginx --system</code></pre>
+
+      <h3>Preview removal</h3>
+      <pre class="language-bash"><code>mkunit remove myapp --dry-run</code></pre>
+
+      <h3>Keep the logs</h3>
+      <pre class="language-bash"><code>mkunit remove myapp --keep-logs</code></pre>
+
+      <h3>Remove a timer and its service</h3>
+      <pre class="language-bash"><code>mkunit remove backup.timer
+mkunit remove backup.service</code></pre>
+
+      <div class="callout callout-warning">
+        <div class="callout-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          Warning
+        </div>
+        <p>
+          This action cannot be undone. The unit file will be permanently deleted.
+          Use <code>--dry-run</code> to preview what will be removed.
+        </p>
+      </div>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/list.html">mkunit list</a> - List units to find what to remove</li>
+          <li><a href="/docs/commands/status.html">mkunit status</a> - Check unit status before removing</li>
+          <li><a href="/docs/commands/show.html">mkunit show</a> - View unit contents before removing</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

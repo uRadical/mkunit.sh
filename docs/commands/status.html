@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit status - Check unit status</title>
+  <meta name="description" content="Check the status of systemd units.">
+  <meta property="og:title" content="mkunit status command">
+  <meta property="og:description" content="Check systemd unit status with mkunit.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/status.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link active">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1><code>mkunit status</code></h1>
+      <p class="docs-subtitle">Check the status of a unit.</p>
+
+      <div class="usage-box">
+        mkunit status &lt;name&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>status</code> command shows the current status of a unit. This is a
+        convenient wrapper around <code>systemctl status</code> that automatically handles
+        user vs system units.
+      </p>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;name&gt;</code></td>
+            <td>Name of the unit (with or without extension)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Check a system unit</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--quiet</code>, <code>-q</code></td>
+            <td>Only return exit code, no output</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--json</code></td>
+            <td>Output status as JSON</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Exit Codes</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Unit is active (running)</td></tr>
+          <tr><td><code>1</code></td><td>Unit is inactive or dead</td></tr>
+          <tr><td><code>2</code></td><td>Unit is activating or deactivating</td></tr>
+          <tr><td><code>3</code></td><td>Unit has failed</td></tr>
+          <tr><td><code>4</code></td><td>Unit not found</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Examples</h2>
+
+      <h3>Check service status</h3>
+      <pre class="language-bash"><code>mkunit status myapp</code></pre>
+
+      <p>Example output:</p>
+      <pre class="language-bash"><code>● myapp.service - myapp service
+     Loaded: loaded (/home/user/.config/systemd/user/myapp.service; enabled)
+     Active: active (running) since Mon 2024-01-15 10:30:00 UTC; 2h ago
+   Main PID: 12345 (server)
+      Tasks: 4 (limit: 4915)
+     Memory: 24.5M
+        CPU: 1.234s
+     CGroup: /user.slice/user-1000.slice/user@1000.service/app.slice/myapp.service
+             └─12345 /home/user/myapp/server
+
+Jan 15 10:30:00 hostname server[12345]: Starting server on :8080</code></pre>
+
+      <h3>Check system service</h3>
+      <pre class="language-bash"><code>mkunit status nginx --system</code></pre>
+
+      <h3>Check timer status</h3>
+      <pre class="language-bash"><code>mkunit status backup.timer</code></pre>
+
+      <p>For timers, this shows when the timer last ran and when it will run next.</p>
+
+      <h3>Quiet mode for scripts</h3>
+      <pre class="language-bash"><code>if mkunit status myapp -q; then
+  echo "Service is running"
+else
+  echo "Service is not running"
+fi</code></pre>
+
+      <h3>JSON output</h3>
+      <pre class="language-bash"><code>mkunit status myapp --json</code></pre>
+
+      <pre class="language-json"><code>{
+  "name": "myapp.service",
+  "load_state": "loaded",
+  "active_state": "active",
+  "sub_state": "running",
+  "pid": 12345,
+  "memory": "24.5M",
+  "uptime": "2h 15m",
+  "enabled": true
+}</code></pre>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/logs.html">mkunit logs</a> - View unit logs</li>
+          <li><a href="/docs/commands/list.html">mkunit list</a> - List all units</li>
+          <li><a href="/docs/commands/show.html">mkunit show</a> - Show unit configuration</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

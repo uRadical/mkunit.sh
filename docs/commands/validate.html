@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit validate - Validate systemd unit files</title>
+  <meta name="description" content="Validate systemd unit files for common mistakes and issues.">
+  <meta property="og:title" content="mkunit validate command">
+  <meta property="og:description" content="Validate systemd unit files with mkunit.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/validate.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link active">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1><code>mkunit validate</code></h1>
+      <p class="docs-subtitle">Validate unit files for common issues and mistakes.</p>
+
+      <div class="usage-box">
+        mkunit validate &lt;name|path&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>validate</code> command checks unit files for common issues including
+        syntax errors, missing executables, relative paths, and configuration problems.
+        It uses <code>systemd-analyze verify</code> under the hood plus additional checks.
+      </p>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;name|path&gt;</code></td>
+            <td>Unit name or path to unit file</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Validate as a system unit</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--strict</code></td>
+            <td>Treat warnings as errors</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--json</code></td>
+            <td>Output results as JSON</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Validation Checks</h2>
+      <p>mkunit validate checks for the following issues:</p>
+
+      <h3>Errors (will fail validation)</h3>
+      <ul>
+        <li>Invalid INI syntax</li>
+        <li>Missing required sections (e.g., [Service] for .service units)</li>
+        <li>Invalid directive names</li>
+        <li>Invalid values for known directives</li>
+        <li>Circular dependencies</li>
+      </ul>
+
+      <h3>Warnings</h3>
+      <ul>
+        <li><strong>Relative paths in ExecStart</strong> - Should use absolute paths</li>
+        <li><strong>Missing executable</strong> - The command doesn't exist at the specified path</li>
+        <li><strong>Non-executable file</strong> - The file exists but isn't executable</li>
+        <li><strong>Missing WorkingDirectory</strong> - Directory doesn't exist</li>
+        <li><strong>Deprecated directives</strong> - Using old/deprecated options</li>
+        <li><strong>Security concerns</strong> - Running as root without hardening</li>
+        <li><strong>Missing [Install] section</strong> - Unit can't be enabled</li>
+      </ul>
+
+      <h2>Examples</h2>
+
+      <h3>Validate an installed unit</h3>
+      <pre class="language-bash"><code>mkunit validate myapp</code></pre>
+
+      <p>Example output:</p>
+      <pre class="language-bash"><code>Validating myapp.service...
+✓ Syntax OK
+✓ ExecStart path exists
+⚠ Warning: No security hardening options enabled
+⚠ Warning: Consider adding ProtectSystem=strict
+
+1 error, 2 warnings</code></pre>
+
+      <h3>Validate a unit file before installing</h3>
+      <pre class="language-bash"><code>mkunit validate ./myapp.service</code></pre>
+
+      <h3>Strict mode (fail on warnings)</h3>
+      <pre class="language-bash"><code>mkunit validate myapp --strict</code></pre>
+
+      <h3>JSON output for CI/CD</h3>
+      <pre class="language-bash"><code>mkunit validate myapp --json</code></pre>
+
+      <p>Example JSON output:</p>
+      <pre class="language-json"><code>{
+  "unit": "myapp.service",
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    {
+      "code": "W001",
+      "message": "No security hardening options enabled",
+      "line": null,
+      "suggestion": "Add --hardening flag or manually add security directives"
+    }
+  ]
+}</code></pre>
+
+      <h3>Validate in CI pipeline</h3>
+      <pre class="language-bash"><code># In your CI script
+mkunit service myapp --exec "./server" --dry-run > myapp.service
+mkunit validate ./myapp.service --strict
+if [ $? -ne 0 ]; then
+  echo "Unit validation failed"
+  exit 1
+fi</code></pre>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Exit Codes
+        </div>
+        <p>
+          <code>0</code> = Valid (may have warnings)<br>
+          <code>1</code> = Errors found<br>
+          <code>2</code> = Warnings found (with --strict)
+        </p>
+      </div>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/show.html">mkunit show</a> - View unit file contents</li>
+          <li><a href="/docs/commands/edit.html">mkunit edit</a> - Edit and fix issues</li>
+          <li><a href="/docs/guides/hardening.html">Security Hardening Guide</a> - Fix security warnings</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

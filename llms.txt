@@ -1,0 +1,61 @@
+# mkunit
+
+> mkunit is a CLI tool for creating systemd unit files quickly and easily.
+
+mkunit takes the pain out of writing systemd unit files. Instead of manually creating .service, .timer, .path, .socket, .mount, and .target files, mkunit generates them with a single command.
+
+## Key Features
+
+- Interactive mode for guided unit file creation
+- Scriptable for CI/CD and automation
+- Supports all common systemd unit types: service, timer, path, socket, mount, target
+- Built-in security hardening options
+- Automatic installation and service management
+- Shell completions for bash, zsh, and fish
+
+## Quick Start
+
+Install via Cargo:
+```
+cargo install mkunit
+```
+
+Create a simple service:
+```
+mkunit service myapp --exec "./server" --install --start
+```
+
+Create a timer (cron replacement):
+```
+mkunit timer backup --on-calendar "daily" --exec "/usr/local/bin/backup.sh" --install
+```
+
+## Documentation
+
+- Installation: https://mkunit.sh/docs/guides/installation.html
+- Quick Start: https://mkunit.sh/docs/guides/quick-start.html
+- Commands Reference: https://mkunit.sh/docs/
+
+## Unit Types
+
+- **service**: Long-running daemons and one-shot scripts
+- **timer**: Scheduled tasks (systemd's cron replacement)
+- **path**: File/directory watching triggers
+- **socket**: Socket-activated services
+- **mount**: Filesystem mount points
+- **target**: Grouping and ordering units
+
+## Common Use Cases
+
+1. Running a web application as a systemd service
+2. Scheduling backups with timers
+3. Watching directories for file changes
+4. Socket-activated services for on-demand startup
+5. Security-hardened services with sandboxing
+
+## Links
+
+- Website: https://mkunit.sh
+- Documentation: https://mkunit.sh/docs/
+- GitHub: https://github.com/alan/mkunit
+- Made by uRadical: https://uradical.io

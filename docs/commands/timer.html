@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit timer - Create systemd timer units</title>
+  <meta name="description" content="Create systemd timer unit files with mkunit timer command. Schedule tasks as a cron replacement.">
+  <meta property="og:title" content="mkunit timer command">
+  <meta property="og:description" content="Create systemd timer units for scheduling tasks.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/timer.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo"><span class="nav-logo-icon">$</span> mkunit</a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link active">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="docs-content">
+      <h1><code>mkunit timer</code></h1>
+      <p class="docs-subtitle">Create a systemd timer unit (cron replacement).</p>
+
+      <div class="usage-box">
+        mkunit timer &lt;name&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>timer</code> command creates a <code>.timer</code> unit file for scheduling services
+        to run at specific times or intervals. Timers are more flexible and reliable than cron,
+        supporting features like persistent timers, randomized delays, and calendar expressions.
+      </p>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;name&gt;</code></td>
+            <td>Name of the timer (without <code>.timer</code> extension)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--unit &lt;name&gt;</code></td>
+            <td>Service unit to trigger (defaults to same name as timer)</td>
+            <td><code>&lt;name&gt;.service</code></td>
+          </tr>
+          <tr>
+            <td><code>--on-calendar &lt;expr&gt;</code></td>
+            <td>Calendar expression (e.g., "daily", "*:0/15")</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--on-boot &lt;seconds&gt;</code></td>
+            <td>Run N seconds after boot</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--on-startup &lt;seconds&gt;</code></td>
+            <td>Run N seconds after service manager start</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--on-unit-active &lt;seconds&gt;</code></td>
+            <td>Run N seconds after unit was last activated</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--on-unit-inactive &lt;seconds&gt;</code></td>
+            <td>Run N seconds after unit became inactive</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--persistent</code></td>
+            <td>Run immediately if last run was missed</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--randomized-delay &lt;seconds&gt;</code></td>
+            <td>Add random delay (0 to N seconds)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>--accuracy &lt;seconds&gt;</code></td>
+            <td>Timer accuracy/coalescing window</td>
+            <td><code>60</code></td>
+          </tr>
+          <tr>
+            <td><code>--description &lt;text&gt;</code></td>
+            <td>Human-readable description</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Create a system timer (requires sudo)</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--install</code></td>
+            <td>Install the unit file after creation</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--start</code></td>
+            <td>Start the timer after installation</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--enable</code></td>
+            <td>Enable the timer to start on boot</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--dry-run</code></td>
+            <td>Print unit file without writing</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Calendar Expressions</h2>
+      <p>
+        Systemd uses calendar expressions for scheduling. Here are common patterns:
+      </p>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Expression</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>minutely</code></td><td>Every minute</td></tr>
+          <tr><td><code>hourly</code></td><td>Every hour at :00</td></tr>
+          <tr><td><code>daily</code></td><td>Every day at 00:00</td></tr>
+          <tr><td><code>weekly</code></td><td>Every Monday at 00:00</td></tr>
+          <tr><td><code>monthly</code></td><td>First of every month at 00:00</td></tr>
+          <tr><td><code>yearly</code></td><td>January 1st at 00:00</td></tr>
+          <tr><td><code>*:0/15</code></td><td>Every 15 minutes</td></tr>
+          <tr><td><code>*:0/5</code></td><td>Every 5 minutes</td></tr>
+          <tr><td><code>Mon..Fri 09:00</code></td><td>Weekdays at 9am</td></tr>
+          <tr><td><code>Sat,Sun 10:00</code></td><td>Weekends at 10am</td></tr>
+          <tr><td><code>*-*-01 00:00</code></td><td>First of every month at midnight</td></tr>
+          <tr><td><code>Sun *-*-* 03:00:00</code></td><td>Every Sunday at 3am</td></tr>
+          <tr><td><code>*-01-01 00:00:00</code></td><td>New Year's Day at midnight</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Tip
+        </div>
+        <p>Use <code>systemd-analyze calendar "expression"</code> to test calendar expressions and see when they would trigger.</p>
+      </div>
+
+      <h2>Examples</h2>
+
+      <h3>Daily backup at midnight</h3>
+      <pre class="language-bash"><code>mkunit timer backup --on-calendar "daily" --unit backup.service</code></pre>
+
+      <h3>Every 15 minutes</h3>
+      <pre class="language-bash"><code>mkunit timer sync --on-calendar "*:0/15" --install --start</code></pre>
+
+      <h3>5 minutes after boot</h3>
+      <pre class="language-bash"><code>mkunit timer startup-task --on-boot 300 --install --enable</code></pre>
+
+      <h3>Weekly on Sunday at 3am</h3>
+      <pre class="language-bash"><code>mkunit timer weekly-cleanup --on-calendar "Sun *-*-* 03:00:00"</code></pre>
+
+      <h3>Weekdays at 9am</h3>
+      <pre class="language-bash"><code>mkunit timer workday-report --on-calendar "Mon..Fri 09:00" --install</code></pre>
+
+      <h3>Persistent timer (catches up if missed)</h3>
+      <pre class="language-bash"><code>mkunit timer important-job --on-calendar "daily" --persistent --install</code></pre>
+
+      <h3>With randomized delay (for load distribution)</h3>
+      <pre class="language-bash"><code>mkunit timer distributed-task \
+  --on-calendar "hourly" \
+  --randomized-delay 300 \
+  --install</code></pre>
+
+      <h3>Run every 30 minutes after last run</h3>
+      <pre class="language-bash"><code>mkunit timer recurring-task --on-unit-active 1800 --install --start</code></pre>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/service.html">mkunit service</a> - Create the service this timer triggers</li>
+          <li><a href="/docs/commands/status.html">mkunit status</a> - Check timer status</li>
+          <li><a href="/docs/commands/list.html">mkunit list</a> - List all timers</li>
+          <li><code>man systemd.time</code> - Full calendar expression syntax</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>
