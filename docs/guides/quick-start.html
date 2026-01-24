@@ -65,6 +65,7 @@
           <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
           <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
           <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/link.html" class="docs-sidebar-link">link</a>
           <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
           <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
           <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
@@ -208,12 +209,31 @@ sudo mkunit service nginx-custom \
   --user nginx \
   --install --enable</code></pre>
 
+      <h2>Version Control Workflow</h2>
+      <p>Keep your unit files in git and symlink them to systemd:</p>
+
+      <pre class="language-bash"><code># Create unit file in your repo (not installed to systemd)
+mkunit service myapp \
+  --exec "/usr/bin/myapp" \
+  --output ./systemd/myapp.service \
+  --no-interactive
+
+# Commit to git
+git add systemd/myapp.service
+git commit -m "Add myapp service"
+
+# Link to systemd (creates symlink, enables unit)
+mkunit link ./systemd/myapp.service --install</code></pre>
+
+      <p>See <a href="/docs/commands/link.html">mkunit link</a> for more details.</p>
+
       <div class="see-also">
         <h3>Next Steps</h3>
         <ul>
           <li><a href="/docs/guides/interactive-mode.html">Interactive Mode</a> - Let mkunit prompt for options</li>
           <li><a href="/docs/commands/service.html">service command</a> - All service options</li>
           <li><a href="/docs/commands/timer.html">timer command</a> - Schedule tasks</li>
+          <li><a href="/docs/commands/link.html">link command</a> - Version control workflow</li>
           <li><a href="/docs/guides/hardening.html">Security Hardening</a> - Lock down your services</li>
         </ul>
       </div>

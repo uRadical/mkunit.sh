@@ -53,6 +53,10 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://mkunit.sh/docs/commands/link.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://mkunit.sh/docs/commands/edit.html</loc>
     <priority>0.6</priority>
   </url>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mkunit link - Link unit files from version control</title>
+  <meta name="description" content="Link existing systemd unit files to systemd directories with mkunit link command.">
+  <meta property="og:title" content="mkunit link command">
+  <meta property="og:description" content="Link existing systemd unit files to systemd directories with mkunit.">
+  <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
+  <meta property="og:url" content="https://mkunit.sh/docs/commands/link.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-icon">$</span> mkunit
+      </a>
+      <div class="nav-links">
+        <a href="/docs/" class="nav-link active">Docs</a>
+        <a href="/docs/guides/installation.html" class="nav-link">Install</a>
+        <a href="https://github.com/alan/mkunit" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+        </button>
+      </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="/docs/">Documentation</a>
+      <a href="/docs/guides/installation.html">Installation</a>
+      <a href="https://github.com/alan/mkunit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <!-- Sidebar -->
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/installation.html" class="docs-sidebar-link">Installation</a>
+          <a href="/docs/guides/quick-start.html" class="docs-sidebar-link">Quick Start</a>
+          <a href="/docs/guides/interactive-mode.html" class="docs-sidebar-link">Interactive Mode</a>
+        </div>
+      </div>
+
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Commands</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/commands/service.html" class="docs-sidebar-link">service</a>
+          <a href="/docs/commands/timer.html" class="docs-sidebar-link">timer</a>
+          <a href="/docs/commands/path.html" class="docs-sidebar-link">path</a>
+          <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
+          <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
+          <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/link.html" class="docs-sidebar-link active">link</a>
+          <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
+          <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
+          <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
+          <a href="/docs/commands/status.html" class="docs-sidebar-link">status</a>
+          <a href="/docs/commands/logs.html" class="docs-sidebar-link">logs</a>
+          <a href="/docs/commands/remove.html" class="docs-sidebar-link">remove</a>
+          <a href="/docs/commands/list.html" class="docs-sidebar-link">list</a>
+          <a href="/docs/commands/completions.html" class="docs-sidebar-link">completions</a>
+        </div>
+      </div>
+
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <div class="docs-sidebar-links">
+          <a href="/docs/guides/scripting.html" class="docs-sidebar-link">Scripting & CI</a>
+          <a href="/docs/guides/hardening.html" class="docs-sidebar-link">Security Hardening</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="docs-content">
+      <h1><code>mkunit link</code></h1>
+      <p class="docs-subtitle">Link an existing unit file to systemd.</p>
+
+      <div class="usage-box">
+        mkunit link &lt;file&gt; [flags]
+      </div>
+
+      <h2>Description</h2>
+      <p>
+        The <code>link</code> command creates a symbolic link from your systemd unit directory
+        to an existing unit file. This is ideal for keeping unit files in version control
+        (git) while still having them active in systemd.
+      </p>
+      <p>
+        Instead of copying the unit file, mkunit creates a symlink so changes to your
+        source file are immediately reflected. This enables a workflow where you can:
+      </p>
+      <ul>
+        <li>Store unit files in your project repository</li>
+        <li>Review unit file changes in pull requests</li>
+        <li>Deploy the same units across multiple machines</li>
+        <li>Track unit file history with git</li>
+      </ul>
+
+      <h2>Arguments</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Argument</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;file&gt;</code></td>
+            <td>Path to the unit file (must have valid extension: <code>.service</code>, <code>.timer</code>, <code>.path</code>, <code>.socket</code>, <code>.mount</code>, <code>.target</code>)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Flags</h2>
+      <table class="flags-table">
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--system</code></td>
+            <td>Link as a system unit (to <code>/etc/systemd/system</code>)</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--install, -i</code></td>
+            <td>Enable the unit after linking</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--start</code></td>
+            <td>Start the unit after enabling</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--force, -f</code></td>
+            <td>Overwrite existing symlink or file</td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td><code>--dry-run</code></td>
+            <td>Show what would happen without making changes</td>
+            <td><code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Examples</h2>
+
+      <h3>Basic usage</h3>
+      <pre class="language-bash"><code># Link a unit file from current directory
+mkunit link ./myapp.service</code></pre>
+
+      <h3>Link and enable</h3>
+      <pre class="language-bash"><code># Link and enable the unit to start on boot
+mkunit link ./myapp.service --install</code></pre>
+
+      <h3>Link, enable, and start</h3>
+      <pre class="language-bash"><code># Link, enable, and start immediately
+mkunit link ./myapp.service --install --start</code></pre>
+
+      <h3>System service (requires sudo)</h3>
+      <pre class="language-bash"><code># Link as a system service
+sudo mkunit link ./myapp.service --system --install</code></pre>
+
+      <h3>Preview without making changes</h3>
+      <pre class="language-bash"><code># See what would happen
+mkunit link ./myapp.service --dry-run</code></pre>
+
+      <h3>Overwrite existing link</h3>
+      <pre class="language-bash"><code># Replace an existing symlink
+mkunit link ./myapp.service --force --install</code></pre>
+
+      <h2>Version Control Workflow</h2>
+      <p>
+        The recommended workflow for managing unit files with git:
+      </p>
+
+      <h3>1. Create unit file in your repository</h3>
+      <pre class="language-bash"><code># Generate the unit file to a local directory
+mkunit service myapp \
+  --exec "/usr/bin/myapp" \
+  --output ./systemd/myapp.service \
+  --no-interactive</code></pre>
+
+      <h3>2. Commit to version control</h3>
+      <pre class="language-bash"><code>git add systemd/myapp.service
+git commit -m "Add myapp systemd unit"</code></pre>
+
+      <h3>3. Link on deployment</h3>
+      <pre class="language-bash"><code># On each machine after cloning the repo
+mkunit link ./systemd/myapp.service --install
+
+# For system services
+sudo mkunit link ./systemd/myapp.service --system --install</code></pre>
+
+      <h2>How It Works</h2>
+      <p>
+        When you run <code>mkunit link</code>:
+      </p>
+      <ol>
+        <li>Validates the source file exists and has a valid unit extension</li>
+        <li>Resolves the source path to an absolute path</li>
+        <li>Creates a symbolic link in the systemd directory:
+          <ul>
+            <li>User units: <code>~/.config/systemd/user/</code></li>
+            <li>System units: <code>/etc/systemd/system/</code></li>
+          </ul>
+        </li>
+        <li>Runs <code>systemctl daemon-reload</code> to pick up the new unit</li>
+        <li>Optionally enables and starts the unit</li>
+      </ol>
+
+      <div class="see-also">
+        <h3>See Also</h3>
+        <ul>
+          <li><a href="/docs/commands/service.html">mkunit service</a> - Create a service unit file</li>
+          <li><a href="/docs/commands/remove.html">mkunit remove</a> - Remove a linked unit</li>
+          <li><a href="/docs/commands/list.html">mkunit list</a> - List all mkunit-managed units</li>
+          <li><a href="/docs/guides/scripting.html">Scripting & CI Guide</a> - Automate unit deployment</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <button id="docs-sidebar-toggle" class="docs-mobile-toggle" aria-label="Toggle sidebar">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

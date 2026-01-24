@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Installation - mkunit</title>
-  <meta name="description" content="Install mkunit on Linux or macOS via Homebrew, Cargo, or from source.">
+  <meta name="description" content="Install mkunit on Linux via Cargo.">
   <meta property="og:title" content="Installing mkunit">
   <meta property="og:description" content="Install mkunit on your system.">
   <meta property="og:image" content="https://mkunit.sh/assets/og-image.png">
@@ -65,6 +65,7 @@
           <a href="/docs/commands/socket.html" class="docs-sidebar-link">socket</a>
           <a href="/docs/commands/mount.html" class="docs-sidebar-link">mount</a>
           <a href="/docs/commands/target.html" class="docs-sidebar-link">target</a>
+          <a href="/docs/commands/link.html" class="docs-sidebar-link">link</a>
           <a href="/docs/commands/edit.html" class="docs-sidebar-link">edit</a>
           <a href="/docs/commands/show.html" class="docs-sidebar-link">show</a>
           <a href="/docs/commands/validate.html" class="docs-sidebar-link">validate</a>
@@ -90,79 +91,16 @@
 
       <h2>Requirements</h2>
       <ul>
-        <li>Linux with systemd (for full functionality)</li>
-        <li>macOS (for development/testing - unit files can be generated but not installed)</li>
+        <li>Linux with systemd</li>
+        <li>Rust/Cargo installed (<a href="https://rustup.rs" target="_blank" rel="noopener">rustup.rs</a>)</li>
       </ul>
 
-      <h2>Homebrew (Recommended)</h2>
-      <p>The easiest way to install mkunit on Linux or macOS:</p>
-      <pre class="language-bash"><code>brew install mkunit</code></pre>
-
-      <p>This automatically sets up shell completions for bash, zsh, and fish.</p>
-
-      <h2>Cargo (Rust)</h2>
-      <p>If you have Rust installed:</p>
+      <h2>Install via Cargo</h2>
       <pre class="language-bash"><code>cargo install mkunit</code></pre>
 
       <p>Make sure <code>~/.cargo/bin</code> is in your PATH:</p>
       <pre class="language-bash"><code># Add to ~/.bashrc or ~/.zshrc
 export PATH="$HOME/.cargo/bin:$PATH"</code></pre>
-
-      <h2>Install Script (Debian/Ubuntu)</h2>
-      <p>For Debian-based systems:</p>
-      <pre class="language-bash"><code>curl -sSL https://mkunit.sh/install.sh | bash</code></pre>
-
-      <p>This downloads the latest release binary and installs it to <code>/usr/local/bin</code>.</p>
-
-      <div class="callout callout-info">
-        <div class="callout-title">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          Note
-        </div>
-        <p>Review scripts before running them: <code>curl -sSL https://mkunit.sh/install.sh | less</code></p>
-      </div>
-
-      <h2>Arch Linux (AUR)</h2>
-      <p>Available in the AUR:</p>
-      <pre class="language-bash"><code># Using yay
-yay -S mkunit
-
-# Using paru
-paru -S mkunit</code></pre>
-
-      <h2>NixOS / Nix</h2>
-      <pre class="language-bash"><code># Try it out
-nix-shell -p mkunit
-
-# Install permanently
-nix-env -iA nixpkgs.mkunit</code></pre>
-
-      <p>Or add to your configuration:</p>
-      <pre class="language-nix"><code>environment.systemPackages = with pkgs; [
-  mkunit
-];</code></pre>
-
-      <h2>From Source</h2>
-      <p>Clone and build from source:</p>
-      <pre class="language-bash"><code>git clone https://github.com/alan/mkunit.git
-cd mkunit
-cargo build --release
-
-# Install to /usr/local/bin
-sudo cp target/release/mkunit /usr/local/bin/</code></pre>
-
-      <h2>Pre-built Binaries</h2>
-      <p>Download pre-built binaries from the <a href="https://github.com/alan/mkunit/releases">GitHub Releases</a> page:</p>
-
-      <pre class="language-bash"><code># Linux x86_64
-curl -LO https://github.com/alan/mkunit/releases/latest/download/mkunit-linux-x86_64.tar.gz
-tar xzf mkunit-linux-x86_64.tar.gz
-sudo mv mkunit /usr/local/bin/
-
-# Linux ARM64
-curl -LO https://github.com/alan/mkunit/releases/latest/download/mkunit-linux-aarch64.tar.gz
-tar xzf mkunit-linux-aarch64.tar.gz
-sudo mv mkunit /usr/local/bin/</code></pre>
 
       <h2>Verify Installation</h2>
       <pre class="language-bash"><code>mkunit --version</code></pre>
@@ -184,26 +122,10 @@ eval "$(mkunit completions zsh)"</code></pre>
       <p>See <a href="/docs/commands/completions.html">completions command</a> for more details.</p>
 
       <h2>Upgrading</h2>
-      <pre class="language-bash"><code># Homebrew
-brew upgrade mkunit
-
-# Cargo
-cargo install mkunit --force
-
-# From source
-git pull
-cargo build --release
-sudo cp target/release/mkunit /usr/local/bin/</code></pre>
+      <pre class="language-bash"><code>cargo install mkunit --force</code></pre>
 
       <h2>Uninstalling</h2>
-      <pre class="language-bash"><code># Homebrew
-brew uninstall mkunit
-
-# Cargo
-cargo uninstall mkunit
-
-# Manual
-sudo rm /usr/local/bin/mkunit</code></pre>
+      <pre class="language-bash"><code>cargo uninstall mkunit</code></pre>
 
       <div class="see-also">
         <h3>Next Steps</h3>
