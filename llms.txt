@@ -57,5 +57,5 @@ mkunit timer backup --on-calendar "daily" --exec "/usr/local/bin/backup.sh" --in
 
 - Website: https://mkunit.sh
 - Documentation: https://mkunit.sh/docs/
-- GitHub: https://github.com/alan/mkunit
+- GitHub: https://github.com/uradical/mkunit
 - Made by uRadical: https://uradical.io
