@@ -13,7 +13,7 @@
   </script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mkunit - Create systemd unit files in seconds</title>
+  <title>mkunit - Create systemd unit files in seconds | uRadical</title>
   <meta name="description" content="mkunit is a CLI tool that takes the pain out of writing systemd unit files. Interactive or scriptable. One command, done.">
   <meta name="keywords" content="systemd, unit file, service, timer, linux, cli, generator, automation, devops">
   <meta name="author" content="uRadical">
@@ -51,6 +51,52 @@
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://uradical.io/#organization",
+      "name": "uRadical",
+      "url": "https://uradical.io",
+      "logo": "https://uradical.io/images/uradical_logo_black.png",
+      "sameAs": [
+        "https://github.com/uRadical",
+        "https://www.linkedin.com/company/uradiccal/"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://mkunit.sh/#software",
+      "name": "mkunit",
+      "description": "A CLI tool to create, install and manage systemd unit files. Services, timers, paths, sockets, mounts and targets without the boilerplate.",
+      "url": "https://mkunit.sh",
+      "codeRepository": "https://github.com/uRadical/mkunit",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Command Line Tool",
+      "operatingSystem": "Linux",
+      "programmingLanguage": "Go",
+      "license": "https://opensource.org/licenses/MIT",
+      "sameAs": [
+        "https://github.com/uRadical/mkunit",
+        "https://uradical.io/tools/mkunit"
+      ],
+      "author": {
+        "@id": "https://uradical.io/#organization"
+      },
+      "publisher": {
+        "@id": "https://uradical.io/#organization"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "GBP"
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <!-- Navigation -->
@@ -500,7 +546,11 @@ WantedBy=default.target</code></pre>
         <img src="/assets/uradical.png" alt="uRadical" class="footer-logo">
       </a>
     </div>
-  </footer>
+  
+  <div data-uradical-siblings style="max-width:1080px;margin:0 auto;padding:1.25rem 1rem 0;font-size:0.85rem;line-height:1.7;opacity:0.72">
+    More open-source tools from <a href="https://uradical.io" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px">uRadical</a>: <a href="https://namecheapcli.com" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px">namecheap-cli</a> · <a href="https://gobinder.dev" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px">binder</a> · <a href="https://httpsuite.dev" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px">httpsuite</a> · <a href="https://mklaunchd.sh" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px">mklaunchd</a>
+  </div>
+</footer>
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
